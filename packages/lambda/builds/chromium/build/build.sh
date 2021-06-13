@@ -30,7 +30,7 @@ yum install -y \
   libffi-devel libgcc libgnome-keyring-devel libjpeg-devel libstdc++ libuuid-devel \
   libX11-devel libxkbcommon-x11-devel libXScrnSaver-devel libXtst-devel mercurial \
   mod_ssl ncurses-compat-libs nspr-devel nss-devel pam-devel pango-devel \
-  pciutils-devel php php-cli pkgconfig pulseaudio-libs-devel python python3 \
+  pciutils-devel php php-cli pkgconfig pulseaudio-libs-devel python \
   tar zlib zlib-devel
 
 mkdir -p build/chromium
