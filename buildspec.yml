@@ -1,0 +1,44 @@
+version: 0.2
+
+phases:
+  install:
+#    runtime-versions:
+#      python: 3.8
+# not alive major 2
+    commands:
+      - ${CODEBUILD_SRC_DIR}/packages/lambda/builds/chromium/build/dependencies.sh
+
+      # base image is not alive major version 2. force install
+      # https://monorail-prod.appspot.com/p/chromium/issues/detail?id=1203764
+      - pyenv install 2.7.18
+      - pyenv global 2.7.18
+      - eval "$(pyenv init -)"
+  pre_build:
+    commands:
+      - export VERSION=$(${CODEBUILD_SRC_DIR}/packages/lambda/builds/chromium/latest.sh stable)
+
+      # build config injection
+      - mkdir -p ${CODEBUILD_SRC_DIR}/build/chromium
+      - cp ${CODEBUILD_SRC_DIR}/packages/lambda/builds/chromium/build/.gclient ${CODEBUILD_SRC_DIR}/build/chromium/
+
+      # output dir
+      - mkdir -p ${CODEBUILD_SRC_DIR}/bin
+  build:
+    commands:
+      #- cd packages/lambda/builds/chromium
+      #- ls -la ${CODEBUILD_SRC_DIR}/build/chromium/
+      - ${CODEBUILD_SRC_DIR}/packages/lambda/builds/chromium/build/build.sh
+      #- ls -la bin/headless-chromium
+      #- cd /usr/bin
+      #- ls | grep python
+      #- pyenv versions
+      - python -V
+  post_build:
+    commands:
+      - echo ${VERSION} > ${CODEBUILD_SRC_DIR}/chromium.version
+artifacts:
+  files: 
+    - bin/headless-chromium
+    - chromium.version
+  discard-paths: yes
+
